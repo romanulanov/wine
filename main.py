@@ -21,7 +21,7 @@ def clarify_age(age):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument ('puth_table', nargs='?', default='wine3.xlsx')
+    parser.add_argument ('puth_table', nargs='?', default='wine.xlsx')
     args = parser.parse_args()
     puth_table = args.puth_table
     env = Environment(loader=FileSystemLoader('.'), autoescape=select_autoescape(['html', 'xml']))
