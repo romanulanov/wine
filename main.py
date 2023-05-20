@@ -7,7 +7,7 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 
-YEAR_COMPANY = 1920
+COMPANY_FOUNDATION_YEAR = 1920 
 
 
 def clarify_age(age):
@@ -21,21 +21,23 @@ def clarify_age(age):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument ('puth_table', nargs='?', default='wine.xlsx')
+    parser.add_argument ('path_table', nargs='?', default='wine.xlsx')
     args = parser.parse_args()
-    puth_table = args.puth_table
-    env = Environment(loader=FileSystemLoader('.'), autoescape=select_autoescape(['html', 'xml']))
-    template = env.get_template('template.html')
-    excel_data_df = pandas.read_excel(puth_table, sheet_name='Лист1', na_values=['N/A', 'NA'], keep_default_na=False)
-    wines_dict = excel_data_df.to_dict(orient='records')
+    path_table = args.path_table
+
+    excel_data = (pandas.read_excel(path_table, sheet_name='Лист1', na_values=['N/A', 'NA'], keep_default_na=False)).to_dict(orient='records')
     wines = collections.defaultdict(list)
-    for wine in wines_dict:
+    for wine in excel_data:
         wines[wine['Категория']] += [wine]
     wines = dict(sorted(wines.items()))
-    age = datetime.datetime.now().year-YEAR_COMPANY
+    age = datetime.datetime.now().year-COMPANY_FOUNDATION_YEAR 
+
+    env = Environment(loader=FileSystemLoader('.'), autoescape=select_autoescape(['html', 'xml']))
+    template = env.get_template('template.html')
     rendered_page = template.render(wines=wines, age=clarify_age(age))
     with open('index.html', 'w', encoding="utf8") as file:
         file.write(rendered_page)
+    
     server = HTTPServer(('0.0.0.0', 8000), SimpleHTTPRequestHandler)
     server.serve_forever()
 
