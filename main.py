@@ -3,6 +3,7 @@ import datetime
 import os
 import pandas
 import collections
+from argparse import RawTextHelpFormatter
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
@@ -20,7 +21,7 @@ def clarify_age(age):
 
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description='Магазин элитного вина.\nЗапустить сайт с готовой таблицей можно с помошью команды:\npython3 main.py\nЧтобы сайт взял данные с вашей таблицы, укажите путь с именем таблицы после команды: \npython3 main.py my_wine.xlsx  ', formatter_class=RawTextHelpFormatter)
     parser.add_argument ('path_table', nargs='?', default='wine.xlsx')
     args = parser.parse_args()
     path_table = args.path_table
